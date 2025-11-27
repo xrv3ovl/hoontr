@@ -1,4 +1,4 @@
-use clap::{Arg, ArgAction, Command, crate_name, crate_authors, crate_description, crate_version};
+use clap::{Arg, ArgAction, Command, crate_authors, crate_description, crate_name, crate_version};
 
 // Helper function to create common arguments that will be shared across subcommands
 fn common_args() -> Vec<Arg> {
@@ -10,26 +10,26 @@ fn common_args() -> Vec<Arg> {
             .help("Path to file or folder to enumerate")
             .default_value(r"C:\Windows\System32")
             .value_parser(clap::value_parser!(String)),
-        
+
         Arg::new("nobanner")
             .long("nobanner")
             .value_name("NOBANNER")
             .help("Do not print intro banner")
             .action(ArgAction::SetTrue),
-        
+
         Arg::new("recurse")
             .short('r')
             .long("recurse")
             .value_name("RECURSE")
             .help("If the value specified by --path is a directory, recursively enumerate all subdirectories")
             .action(ArgAction::SetTrue),
-        
+
         Arg::new("all_pes")
             .long("pe")
             .value_name("ALL_PES")
             .help("Include other PE files like EXEs and CPLs in scope as well")
             .action(ArgAction::SetTrue),
-        
+
         Arg::new("arch")
             .long("arch")
             .value_name("ARCH")
@@ -54,9 +54,9 @@ pub fn gen_cli() -> Command {
                         .value_name("BYTE_FILE")
                         .help("Path to a file containing the byte sequence to find")
                         .required(true)
-                        .value_parser(clap::value_parser!(String))
+                        .value_parser(clap::value_parser!(String)),
                 )
-                .args(common_args()) // Add common args to this subcommand
+                .args(common_args()), // Add common args to this subcommand
         )
         .subcommand(
             Command::new("stomphoont")
@@ -68,16 +68,16 @@ pub fn gen_cli() -> Command {
                         .value_name("SHELLCODE_SIZE")
                         .help("Minimum size of .text size section to look for")
                         .required(true)
-                        .value_parser(clap::value_parser!(u32))
+                        .value_parser(clap::value_parser!(u32)),
                 )
                 .arg(
                     Arg::new("no_cfg")
                         .long("no-cfg")
                         .value_name("NO_CFG")
                         .help("Only include DLLs with CFG disabled")
-                        .action(ArgAction::SetTrue)
+                        .action(ArgAction::SetTrue),
                 )
-                .args(common_args()) // Add common args to this subcommand
+                .args(common_args()), // Add common args to this subcommand
         )
         .subcommand(
             Command::new("exporthoont")
@@ -89,18 +89,39 @@ pub fn gen_cli() -> Command {
                         .value_name("FUNC_NAME")
                         .help("String to look for in function names in a case insensitive manner")
                         .required(true)
-                        .value_parser(clap::value_parser!(String))
+                        .value_parser(clap::value_parser!(String)),
                 )
                 .arg(
                     Arg::new("match_case")
                         .long("match-case")
                         .value_name("MATCH_CASE")
                         .help("Match case of provided string")
-                        .action(ArgAction::SetTrue)
+                        .action(ArgAction::SetTrue),
                 )
-                .args(common_args()) // Add common args to this subcommand
+                .args(common_args()), // Add common args to this subcommand
+        )
+        .subcommand(
+            Command::new("importhoont")
+                .about("Find DLLs imported by PEs")
+                .arg(
+                    Arg::new("dll_name")
+                        .short('n')
+                        .long("name")
+                        .value_name("FUNC_NAME")
+                        .help("String to look for in DLL names in a case insensitive manner")
+                        .required(true)
+                        .value_parser(clap::value_parser!(String)),
+                )
+                .arg(
+                    Arg::new("match_case")
+                        .long("match-case")
+                        .value_name("MATCH_CASE")
+                        .help("Match case of provided string")
+                        .action(ArgAction::SetTrue),
+                )
+                .args(common_args()), // Add common args to this subcommand
         )
         .subcommand_required(true);
-    
+
     return matches;
 }

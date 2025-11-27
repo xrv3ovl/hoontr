@@ -28,7 +28,7 @@ pub fn find_opcode(
         match PE::parse(&buffer) {
             Ok(pe) => {
                 for section in pe.sections {
-                    let section_name = match str::from_utf8(&section.name) {
+                    let section_name = match std::str::from_utf8(&section.name) {
                         Ok(v) => v,
                         Err(_e) => continue
                     };
